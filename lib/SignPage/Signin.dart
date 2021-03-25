@@ -93,7 +93,7 @@ class _SignInState extends State<SignIn> {
                                 backgroundColor: Colors.red,
                               ));
                             }
-                            var result= await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                            var result= await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.toLowerCase(), password: passwordController.text);
                             if(result.user.uid.isNotEmpty){
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>NavigationBar(result.user.uid,)));
                             }
