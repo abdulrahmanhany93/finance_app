@@ -1,5 +1,8 @@
+import 'package:financeapp/Widgets/inputText.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 class ForgetPassword extends StatefulWidget {
   @override
   _ForgetPasswordState createState() => _ForgetPasswordState();
@@ -9,6 +12,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   TextEditingController emailController = TextEditingController();
   GlobalKey<FormState> emailKey = GlobalKey();
   GlobalKey<FormState> formKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,19 +46,24 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage('assets/1.png')))),
-                textInput('Email Address', FontAwesomeIcons.user, emailController,
-                    emailKey),
+                InputText('Email Address', FontAwesomeIcons.user,
+                    emailController, emailKey, false),
                 Column(
                   children: [
                     Builder(builder: (BuildContext context) {
                       return TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (!formKey.currentState.validate()) {
                             return snack('Email Required!');
                           }
-                          else{
-                             snack('Check your mail to reset password');
-                             Navigator.pop(context);
+                          if (emailController.text.contains('@') == false ||
+                              emailController.text.contains(".com") == false) {
+                            return snack('Enter valid email please');
+                          } else {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                                email: emailController.text);
+                            snack('Check your mail to reset password');
+                            Navigator.pop(context);
                           }
                         },
                         child: Text(
@@ -66,11 +75,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                         ),
                         style: ButtonStyle(
                             backgroundColor:
-                            MaterialStateProperty.all(Colors.white30)),
+                                MaterialStateProperty.all(Colors.white30)),
                       );
                     }),
-
-
                   ],
                 )
               ],
@@ -80,47 +87,14 @@ class _ForgetPasswordState extends State<ForgetPassword> {
       ),
     );
   }
-  snack(String content){
-    return  ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(
+
+  snack(String content) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(content,
           style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white)),
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
       duration: Duration(seconds: 3),
       backgroundColor: Colors.red,
     ));
-  }
-  
-  textInput(
-      String hint, IconData icon, TextEditingController controller, Key key) {
-    return Container(
-        margin: EdgeInsets.only(bottom: 15,top: 15),
-        padding: EdgeInsets.only(left: 10),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(17), color: Colors.white),
-        child: TextFormField(
-          key: key,
-          controller: controller,
-          validator: (value) {
-            if (value.isEmpty) {
-              return '$hint is required';
-            } else {
-              return null;
-            }
-          },
-          decoration: InputDecoration(
-              alignLabelWithHint: true,
-              prefixIcon: Icon(
-                icon,
-                color: Colors.orange.shade600,
-                size: 30,
-              ),
-              hintText: hint,
-              border: InputBorder.none),
-          style: TextStyle(color: Colors.red, fontSize: 25),
-          keyboardType: TextInputType.emailAddress,
-        ));
   }
 }

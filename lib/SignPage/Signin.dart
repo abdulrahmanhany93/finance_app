@@ -1,11 +1,12 @@
+import 'package:financeapp/NavigationBar/Navigator.dart';
 import 'package:financeapp/SignPage/ForgetPassword.dart';
+import 'package:financeapp/Widgets/inputText.dart';
 import 'package:financeapp/models/usercontroller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:financeapp/NavigationBar/Navigator.dart';
 import 'package:scoped_model/scoped_model.dart';
+
 class SignIn extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();
@@ -17,10 +18,12 @@ class _SignInState extends State<SignIn> {
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> passwordKey = GlobalKey();
   GlobalKey<FormState> formKey = GlobalKey();
+  bool secure = true;
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant(builder: (context,child,UserController user){
+    return ScopedModelDescendant(
+        builder: (context, child, UserController user) {
       return Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -52,10 +55,17 @@ class _SignInState extends State<SignIn> {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage('assets/1.png')))),
-                  textInput('Email Address', FontAwesomeIcons.user,
-                      emailController, emailKey),
-                  textInput('Password', FontAwesomeIcons.unlock,
-                      passwordController, passwordKey),
+                  InputText('Email Address', FontAwesomeIcons.user,
+                      emailController, emailKey, false),
+                  InputText('Password', FontAwesomeIcons.unlock,
+                      passwordController, passwordKey, secure,
+                      rightIcon: secure == true
+                          ? FontAwesomeIcons.eyeSlash
+                          : FontAwesomeIcons.eye, action: () {
+                    setState(() {
+                      secure = !secure;
+                    });
+                  }),
                   Column(
                     children: [
                       TextButton(
@@ -82,33 +92,28 @@ class _SignInState extends State<SignIn> {
                         return TextButton(
                           onPressed: () async {
                             if (!formKey.currentState.validate()) {
-                              return ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text('Some fields  required!',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                duration: Duration(seconds: 3),
-                                backgroundColor: Colors.red,
-                              ));
+                              return snack('Some fields  required!');
                             }
-                            var result= await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.toLowerCase(), password: passwordController.text);
+                            if (emailController.text.contains('@') == false ||
+                                emailController.text.contains(".com") ==
+                                    false) {
+                              return snack('Enter valid email please');
+                            }
+                            var result = await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                                    email: emailController.text.toLowerCase(),
+                                    password: passwordController.text);
 
-                            if(result.user.uid.isNotEmpty){
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>NavigationBar(result.user.uid,)));
+                            if (result.user.uid.isNotEmpty) {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NavigationBar(
+                                            result.user.uid,
+                                          )));
                             }
-                            if(result.user.uid.isEmpty){
-                              return ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Text('No Account',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                duration: Duration(seconds: 3),
-                                backgroundColor: Colors.red,
-                              ));
+                            if (result.user.uid.isEmpty) {
+                              return snack('No Account');
                             }
                           },
                           child: Text(
@@ -120,7 +125,7 @@ class _SignInState extends State<SignIn> {
                           ),
                           style: ButtonStyle(
                               backgroundColor:
-                              MaterialStateProperty.all(Colors.white24)),
+                                  MaterialStateProperty.all(Colors.white24)),
                         );
                       }),
                     ],
@@ -134,34 +139,13 @@ class _SignInState extends State<SignIn> {
     });
   }
 
-  textInput(
-      String hint, IconData icon, TextEditingController controller, Key key) {
-    return Container(
-        margin: EdgeInsets.only(bottom: 0, top: 15),
-        padding: EdgeInsets.only(left: 10),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(17), color: Colors.white),
-        child: TextFormField(
-          key: key,
-          controller: controller,
-          validator: (value) {
-            if (value.isEmpty) {
-              return '$hint is required';
-            } else {
-              return null;
-            }
-          },
-          decoration: InputDecoration(
-              alignLabelWithHint: true,
-              prefixIcon: Icon(
-                icon,
-                color: Colors.orange.shade600,
-                size: 30,
-              ),
-              hintText: hint,
-              border: InputBorder.none),
-          style: TextStyle(color: Colors.red, fontSize: 22),
-          keyboardType: TextInputType.emailAddress,
-        ));
+  snack(String content) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(content,
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+      duration: Duration(seconds: 3),
+      backgroundColor: Colors.red,
+    ));
   }
 }
