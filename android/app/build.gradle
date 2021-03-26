@@ -35,12 +35,18 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.financeapp"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
-
+    android {
+        lintOptions {
+            disable 'InvalidPackage'
+            checkReleaseBuilds false //<- add this line
+        }
+    }
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
