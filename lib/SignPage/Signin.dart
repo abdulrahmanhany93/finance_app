@@ -93,7 +93,6 @@ class _SignInState extends State<SignIn> {
                                 backgroundColor: Colors.red,
                               ));
                             }
-                            FirebaseAuth.instance.isSignInWithEmailLink(emailLink)
                             var result= await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.toLowerCase(), password: passwordController.text);
 
                             if(result.user.uid.isNotEmpty){
