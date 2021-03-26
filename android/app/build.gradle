@@ -41,12 +41,7 @@ android {
         versionName flutterVersionName
         multiDexEnabled true
     }
-    android {
-        lintOptions {
-            disable 'InvalidPackage'
-            checkReleaseBuilds false //<- add this line
-        }
-    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
