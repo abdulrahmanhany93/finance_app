@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1057807604934:android:1862c5227d3f12bc388bc7",
+        "mobilesdk_app_id": "1:1057807604934:android:47c79f3fa27fe4f7388bc7",
         "android_client_info": {
-          "package_name": "com.example.financeapp"
+          "package_name": "com.financeapp"
         }
       },
       "oauth_client": [
