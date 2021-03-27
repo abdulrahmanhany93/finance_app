@@ -1,7 +1,7 @@
-import 'package:financeapp/NavigationBar/HomePage.dart';
-import 'package:financeapp/NavigationBar/Person.dart';
-import 'package:financeapp/NavigationBar/Transactions.dart';
-import 'package:financeapp/NavigationBar/Wallet.dart';
+import 'package:financeapp/NavigationBar/homePage.dart';
+import 'package:financeapp/NavigationBar/person.dart';
+import 'package:financeapp/NavigationBar/transactions.dart';
+import 'package:financeapp/NavigationBar/wallet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

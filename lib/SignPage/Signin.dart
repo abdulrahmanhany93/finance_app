@@ -1,4 +1,4 @@
-import 'package:financeapp/NavigationBar/Navigator.dart';
+import 'package:financeapp/NavigationBar/navigator.dart';
 import 'package:financeapp/SignPage/ForgetPassword.dart';
 import 'package:financeapp/Widgets/inputText.dart';
 import 'package:financeapp/models/usercontroller.dart';
@@ -19,7 +19,6 @@ class _SignInState extends State<SignIn> {
   GlobalKey<FormState> passwordKey = GlobalKey();
   GlobalKey<FormState> formKey = GlobalKey();
   bool secure = true;
-
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant(

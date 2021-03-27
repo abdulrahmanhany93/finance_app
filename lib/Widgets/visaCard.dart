@@ -19,6 +19,8 @@ class VisaCard extends StatelessWidget {
         return ListView.builder(
           scrollDirection:Axis.horizontal ,
             itemCount: user.userData.numberOfAcc,
+            itemExtent: MediaQuery.of(context).size.width,
+
             itemBuilder: (context, index) {
              return Container(
                 width: MediaQuery.of(context).size.width * 0.95,
